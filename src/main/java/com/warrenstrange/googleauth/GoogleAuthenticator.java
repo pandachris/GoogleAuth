@@ -30,16 +30,20 @@
 
 package com.warrenstrange.googleauth;
 
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Base64;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class implements the functionality described in RFC 6238 (TOTP: Time
@@ -166,7 +170,7 @@ public final class GoogleAuthenticator implements IGoogleAuthenticator
      * that it is expected to work correctly in previous versions of the Java
      * platform as well.
      */
-    private ReseedingSecureRandom secureRandom = new ReseedingSecureRandom(
+    private final ReseedingSecureRandom secureRandom = new ReseedingSecureRandom(
             getRandomNumberAlgorithm(),
             getRandomNumberAlgorithmProvider());
 
@@ -502,21 +506,25 @@ public final class GoogleAuthenticator implements IGoogleAuthenticator
     }
 
 
+		@Override
     public int getTotpPassword(String secret)
     {
         return getTotpPassword(secret, new Date().getTime());
     }
 
+		@Override
     public int getTotpPassword(String secret, long time)
     {
         return calculateCode(decodeSecret(secret), getTimeWindowFromTime(time));
     }
 
+		@Override
     public int getTotpPasswordOfUser(String userName)
     {
         return getTotpPasswordOfUser(userName, new Date().getTime());
     }
 
+		@Override
     public int getTotpPasswordOfUser(String userName, long time)
     {
         ICredentialRepository repository = getValidCredentialRepository();
@@ -623,6 +631,7 @@ public final class GoogleAuthenticator implements IGoogleAuthenticator
      * @return the first registered ICredentialRepository or <code>null</code>
      * if none is found.
      */
+		@Override
     public ICredentialRepository getCredentialRepository()
     {
         if (this.credentialRepositorySearched) return this.credentialRepository;

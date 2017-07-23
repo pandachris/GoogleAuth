@@ -30,10 +30,10 @@
 
 package com.warrenstrange.googleauth;
 
-import org.apache.http.client.utils.URIBuilder;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class provides helper methods to create a QR code containing the
@@ -42,7 +42,7 @@ import java.net.URLEncoder;
  * contained therein.
  */
 public final class GoogleAuthenticatorQRGenerator {
-    
+
     /**
      * The format string to generate the Google Chart HTTP API call.
      */
@@ -87,7 +87,7 @@ public final class GoogleAuthenticatorQRGenerator {
         if (accountName == null || accountName.trim().length() == 0) {
             throw new IllegalArgumentException("Account name must not be empty.");
         }
-        
+
         StringBuilder sb = new StringBuilder();
         if (issuer != null) {
             if (issuer.contains(":")) {
@@ -154,7 +154,7 @@ public final class GoogleAuthenticatorQRGenerator {
     public static String getOtpAuthTotpURL(String issuer,
                                            String accountName,
                                            GoogleAuthenticatorKey credentials) {
-        
+
         URIBuilder uri = new URIBuilder()
             .setScheme("otpauth")
             .setHost("totp")
@@ -169,7 +169,7 @@ public final class GoogleAuthenticatorQRGenerator {
 
             uri.setParameter("issuer", issuer);
         }
-        
+
         /*
             The following parameters aren't needed since they are all defaults.
             We can exclude them to make the URI shorter.
@@ -177,9 +177,49 @@ public final class GoogleAuthenticatorQRGenerator {
         // uri.setParameter("algorithm", "SHA1");
         // uri.setParameter("digits", "6");
         // uri.setParameter("period", "30");
-        
+
         return uri.toString();
 
     }
-    
+
+		private static class URIBuilder {
+			private String scheme;
+			private String host;
+			private String path;
+			private final Map<String,String> parameters = new LinkedHashMap<>();
+
+			URIBuilder setScheme(String scheme) {
+				this.scheme = scheme;
+				return this;
+			}
+
+			URIBuilder setHost(String host) {
+				this.host = host;
+				return this;
+			}
+
+			URIBuilder setPath(String path) {
+				this.path = path;
+				return this;
+			}
+
+			URIBuilder setParameter(String name, String value) {
+				parameters.put(name, value);
+				return this;
+			}
+
+		@Override
+		public String toString()
+		{
+			String string = scheme + "://" + host + path;
+			char paramDelim = '?';
+			for (Map.Entry<String,String> param : parameters.entrySet()) {
+				string += paramDelim + param.getKey() + '=' + param.getValue();
+				paramDelim = '&';
+			}
+			return string;
+		}
+
+
+		}
 }
