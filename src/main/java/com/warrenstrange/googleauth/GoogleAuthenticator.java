@@ -38,12 +38,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.ServiceLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements the functionality described in RFC 6238 (TOTP: Time
@@ -97,7 +97,7 @@ public final class GoogleAuthenticator implements IGoogleAuthenticator
     /**
      * The logger for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(GoogleAuthenticator.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleAuthenticator.class.getName());
 
     /**
      * The number of bits of a secret key in binary form. Since the Base32
@@ -279,7 +279,7 @@ public final class GoogleAuthenticator implements IGoogleAuthenticator
         catch (NoSuchAlgorithmException | InvalidKeyException ex)
         {
             // Logging the exception.
-            LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+            LOGGER.error(ex.getMessage(), ex);
 
             // We're not disclosing internal error details to our clients.
             throw new GoogleAuthenticatorException("The operation cannot be "
