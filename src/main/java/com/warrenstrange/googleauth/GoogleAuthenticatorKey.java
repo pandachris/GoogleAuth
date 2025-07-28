@@ -36,9 +36,9 @@ import java.util.List;
 /**
  * This class is a JavaBean used by the GoogleAuthenticator library to represent
  * a secret key.
- * <p/>
+ * <p>
  * This class is immutable.
- * <p/>
+ * <p>
  * Instance of this class should only be constructed by the GoogleAuthenticator
  * library.
  *
@@ -54,6 +54,7 @@ public final class GoogleAuthenticatorKey {
      *
      * @deprecated Use GoogleAuthenticatorQRGenerator instead.
      */
+		@Deprecated
     private static final String QR_FORMAT =
             "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&"
                     + "chl=otpauth://totp/%s@%s%%3Fsecret%%3D%s";
@@ -101,6 +102,7 @@ public final class GoogleAuthenticatorKey {
      * @deprecated Use GoogleAuthenticatorQRGenerator##getOtpAuthURL instead.
      */
     @SuppressWarnings("deprecation, unused")
+		@Deprecated
     public static String getQRBarcodeURL(String user, String host, String secret) {
         return String.format(QR_FORMAT, user, host, secret);
     }
